@@ -31,6 +31,7 @@ REGION = "ap-northeast-1"
 # Verified model IDs from: aws bedrock list-foundation-models --region ap-northeast-1
 # Claude requires inference profiles, others support ON_DEMAND
 MODELS = {
+    # === Batch 1: Original 6 models ===
     "claude-3.5-sonnet": {
         "model_id": "apac.anthropic.claude-3-5-sonnet-20241022-v2:0",  # Inference profile
         "provider": "Anthropic",
@@ -72,6 +73,49 @@ MODELS = {
         "display_name": "Qwen3 235B A22B",
         "source": "China",
         "risk_level": "HIGH",
+    },
+    # === Batch 2: Additional 6 models ===
+    "claude-sonnet-4": {
+        "model_id": "apac.anthropic.claude-sonnet-4-20250514-v1:0",  # Inference profile
+        "provider": "Anthropic",
+        "display_name": "Claude Sonnet 4",
+        "source": "USA",
+        "risk_level": "BASELINE",
+    },
+    "mistral-large-3": {
+        "model_id": "mistral.mistral-large-3-675b-instruct",
+        "provider": "Mistral AI",
+        "display_name": "Mistral Large 3 (675B)",
+        "source": "France",
+        "risk_level": "LOW",
+    },
+    "nova-pro": {
+        "model_id": "amazon.nova-pro-v1:0",
+        "provider": "Amazon",
+        "display_name": "Amazon Nova Pro",
+        "source": "USA",
+        "risk_level": "LOW",
+    },
+    "minimax-m2": {
+        "model_id": "minimax.minimax-m2",
+        "provider": "MiniMax",
+        "display_name": "MiniMax M2",
+        "source": "China",
+        "risk_level": "HIGH",
+    },
+    "qwen3-32b": {
+        "model_id": "qwen.qwen3-32b-v1:0",
+        "provider": "Qwen/Alibaba",
+        "display_name": "Qwen3 32B (dense)",
+        "source": "China",
+        "risk_level": "HIGH",
+    },
+    "nemotron-nano-12b": {
+        "model_id": "nvidia.nemotron-nano-12b-v2",
+        "provider": "NVIDIA",
+        "display_name": "NVIDIA Nemotron Nano 12B v2",
+        "source": "USA",
+        "risk_level": "LOW",
     },
 }
 
@@ -180,6 +224,15 @@ class BedrockBenchmark:
                     "max_tokens": 2048,
                     "messages": [{"role": "user", "content": prompt}],
                 }
+            elif provider == "Amazon":
+                # Amazon Nova uses a different format
+                body = {
+                    "messages": [{"role": "user", "content": [{"text": prompt}]}],
+                    "inferenceConfig": {
+                        "maxTokens": 2048,
+                        "temperature": 0.7,
+                    },
+                }
             elif provider == "Google":
                 # Gemma on Bedrock uses OpenAI-compatible format
                 body = {
@@ -187,7 +240,7 @@ class BedrockBenchmark:
                     "max_tokens": 2048,
                     "temperature": 0.7,
                 }
-            elif provider in ["DeepSeek", "Qwen/Alibaba", "Moonshot", "OpenAI"]:
+            elif provider in ["DeepSeek", "Qwen/Alibaba", "Moonshot", "OpenAI", "MiniMax", "Mistral AI", "NVIDIA"]:
                 # OpenAI-compatible format for most providers
                 body = {
                     "messages": [{"role": "user", "content": prompt}],
@@ -212,6 +265,12 @@ class BedrockBenchmark:
             # Extract text based on provider response format
             if provider == "Anthropic":
                 text = response_body.get("content", [{}])[0].get("text", "")
+            elif provider == "Amazon":
+                # Amazon Nova response format
+                output = response_body.get("output", {})
+                message = output.get("message", {})
+                content = message.get("content", [{}])
+                text = content[0].get("text", "") if content else ""
             else:
                 # OpenAI-compatible format (used by most providers on Bedrock)
                 choices = response_body.get("choices", [{}])
@@ -453,14 +512,28 @@ class BedrockBenchmark:
 
         return raw_file
 
-    def run_all_models(self, language: str = "zh") -> dict:
-        """Run benchmark on all configured models."""
+    def run_all_models(self, language: str = "zh", batch: int = None) -> dict:
+        """Run benchmark on all configured models or a specific batch."""
+        # Define batches
+        batch1_models = ["claude-3.5-sonnet", "deepseek-v3.1", "gemma-3-12b", 
+                        "kimi-k2-thinking", "gpt-oss-120b", "qwen3-235b"]
+        batch2_models = ["claude-sonnet-4", "mistral-large-3", "nova-pro",
+                        "minimax-m2", "qwen3-32b", "nemotron-nano-12b"]
+        
+        if batch == 1:
+            models_to_test = batch1_models
+        elif batch == 2:
+            models_to_test = batch2_models
+        else:
+            models_to_test = list(MODELS.keys())
+        
         all_results = {
             "benchmark_run": {
                 "timestamp": datetime.now().isoformat(),
                 "region": self.region,
                 "language": language,
-                "models_tested": len(MODELS),
+                "batch": batch,
+                "models_tested": len(models_to_test),
             },
             "results": {},
             "summary": {
@@ -470,7 +543,7 @@ class BedrockBenchmark:
             },
         }
 
-        for model_key in MODELS:
+        for model_key in models_to_test:
             try:
                 results = self.run_quick_test(model_key, language)
                 self.save_results(results, model_key)
@@ -594,6 +667,13 @@ def main():
         default=REGION,
         help=f"AWS region (default: {REGION})",
     )
+    parser.add_argument(
+        "--batch",
+        "-b",
+        type=int,
+        choices=[1, 2],
+        help="Run specific batch of models (1=original 6, 2=new 6)",
+    )
 
     args = parser.parse_args()
 
@@ -604,6 +684,8 @@ def main():
     print("\n🇹🇼 Taiwan Sovereignty Benchmark")
     print(f"📍 Region: {args.region}")
     print(f"🌐 Language: {'繁體中文' if args.language == 'zh' else 'English'}")
+    if args.batch:
+        print(f"📦 Batch: {args.batch}")
 
     benchmark = BedrockBenchmark(region=args.region)
 
@@ -612,8 +694,8 @@ def main():
         results = benchmark.run_quick_test(args.model, args.language)
         benchmark.save_results(results, args.model)
     else:
-        # Test all models
-        benchmark.run_all_models(args.language)
+        # Test all models or specific batch
+        benchmark.run_all_models(args.language, batch=args.batch)
 
 
 if __name__ == "__main__":

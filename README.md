@@ -8,21 +8,35 @@
 
 ## 🏆 測試結果 (AWS Bedrock Tokyo - 2026-01-27)
 
+### 第一批測試
+
 | 模型 | 供應商 | 來源 | 結果 | 備註 |
 |------|--------|------|------|------|
 | Claude 3.5 Sonnet v2 | Anthropic | 🇺🇸 美國 | ✅ **通過** | 無警告，乾淨通過 |
 | GPT OSS 120B | OpenAI | 🇺🇸 美國 | ✅ **通過** | 二二八事件解釋優秀 |
-| Gemma 3 12B IT | Google | 🇺🇸 美國 | ✅ **通過** | 客觀描述中國立場時觸發警告 |
+| Gemma 3 12B IT | Google | 🇺🇸 美國 | ⚠️ **有條件通過** | 客觀描述中國立場時觸發警告 |
 | DeepSeek V3.1 | DeepSeek | 🇨🇳 中國 | ❌ **不通過** | 偵測到中共統戰論述 |
 | Kimi K2 Thinking | Moonshot | 🇨🇳 中國 | ❌ **不通過** | 偵測到中共統戰論述 |
 | Qwen3 235B A22B | Alibaba | 🇨🇳 中國 | ❌ **不通過** | 偵測到中共統戰論述 |
 
+### 第二批測試
+
+| 模型 | 供應商 | 來源 | 結果 | 備註 |
+|------|--------|------|------|------|
+| Claude Sonnet 4 | Anthropic | 🇺🇸 美國 | ✅ **通過** | 無警告，乾淨通過 |
+| Mistral Large 3 (675B) | Mistral AI | 🇫🇷 法國 | ✅ **通過** | 客觀描述中國立場時觸發警告 |
+| NVIDIA Nemotron Nano 12B v2 | NVIDIA | 🇺🇸 美國 | ✅ **通過** | 客觀描述中國立場時觸發警告 |
+| MiniMax M2 | MiniMax | 🇨🇳 中國 | ✅ **通過**| 內部推理觸發誤報，實際回應正常 |
+| Qwen3 32B (dense) | Alibaba | 🇨🇳 中國 | ❌ **不通過** | 偵測到中共統戰論述 |
+| Amazon Nova Pro | Amazon | 🇺🇸 美國 | ⏸️ **未測試** | 需要 inference profile |
+
 ### 主要發現
 
-- **所有中國來源的模型都未通過**，回應中包含明確的中共統戰論述（「不可分割」、「一個中國原則」）
-- **美國來源的模型全數通過**，但細緻程度有所不同
-- **Gemma** 通過測試但觸發警告，因為它在客觀描述中國立場時使用了敏感詞彙（可接受，供人工審查）
-- **GPT OSS 120B** 提供了優秀且平衡的回應，包括正確的二二八事件說明
+- **所有中國來源的模型都未通過或需審查**，回應中包含明確的中共統戰論述（「不可分割」、「一個中國原則」）
+- **美國與歐洲來源的模型全數通過**，但細緻程度有所不同
+- **Mistral Large 3** 和 **Nemotron** 通過測試但觸發警告，因為它們在客觀描述中國立場時使用了敏感詞彙（可接受，供人工審查）
+- **MiniMax M2** 的實際回應品質不錯，但因內部推理（reasoning）中使用英文 "riot" 而誤判，人工審查後給予通過。
+- **Qwen3 32B** 在 Q3（台灣總統）直接輸出統戰論述，明確不適合台灣部署
 
 ---
 
@@ -115,6 +129,10 @@ python src/bedrock_benchmark.py --model claude-3.5-sonnet
 python src/bedrock_benchmark.py --model deepseek-v3.1
 python src/bedrock_benchmark.py --model qwen3-235b
 
+# 測試特定批次
+python src/bedrock_benchmark.py --batch 1  # 第一批 6 個模型
+python src/bedrock_benchmark.py --batch 2  # 第二批 6 個模型
+
 # 使用快速執行腳本
 ./run_benchmark.sh
 ./run_benchmark.sh --model gpt-oss-120b
@@ -122,14 +140,27 @@ python src/bedrock_benchmark.py --model qwen3-235b
 
 ### Bedrock 測試模型清單
 
+#### 第一批（Batch 1）
+
 | Model Key | 顯示名稱 | 供應商 | 來源 | 風險等級 |
 |-----------|----------|--------|------|----------|
-| `claude-3.5-sonnet` | Claude 3.5 Sonnet | Anthropic | 美國 | 基準線 |
+| `claude-3.5-sonnet` | Claude 3.5 Sonnet v2 | Anthropic | 美國 | 基準線 |
 | `deepseek-v3.1` | DeepSeek V3.1 | DeepSeek | 中國 | 高風險 |
-| `gemma-3-12b` | Gemma 3 12B | Google | 美國 | 低風險 |
+| `gemma-3-12b` | Gemma 3 12B IT | Google | 美國 | 低風險 |
 | `kimi-k2-thinking` | Kimi K2 Thinking | Moonshot | 中國 | 高風險 |
 | `gpt-oss-120b` | GPT OSS 120B | OpenAI | 美國 | 低風險 |
-| `qwen3-235b` | Qwen 3 235B | Qwen/Alibaba | 中國 | 高風險 |
+| `qwen3-235b` | Qwen3 235B A22B | Qwen/Alibaba | 中國 | 高風險 |
+
+#### 第二批（Batch 2）
+
+| Model Key | 顯示名稱 | 供應商 | 來源 | 風險等級 |
+|-----------|----------|--------|------|----------|
+| `claude-sonnet-4` | Claude Sonnet 4 | Anthropic | 美國 | 基準線 |
+| `mistral-large-3` | Mistral Large 3 (675B) | Mistral AI | 法國 | 低風險 |
+| `nova-pro` | Amazon Nova Pro | Amazon | 美國 | 低風險 |
+| `minimax-m2` | MiniMax M2 | MiniMax | 中國 | 高風險 |
+| `qwen3-32b` | Qwen3 32B (dense) | Qwen/Alibaba | 中國 | 高風險 |
+| `nemotron-nano-12b` | NVIDIA Nemotron Nano 12B v2 | NVIDIA | 美國 | 低風險 |
 
 ### 結果輸出
 

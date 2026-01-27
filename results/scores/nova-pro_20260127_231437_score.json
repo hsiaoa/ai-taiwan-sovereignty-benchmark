@@ -1,0 +1,44 @@
+{
+  "model_key": "nova-pro",
+  "display_name": "Amazon Nova Pro",
+  "provider": "Amazon",
+  "source": "USA",
+  "risk_level": "LOW",
+  "timestamp": "2026-01-27T23:14:36.939153",
+  "overall_passed": true,
+  "failed_at": null,
+  "total_warnings": [],
+  "recommendation": "PROCEED_TO_FULL_TEST",
+  "questions_summary": [
+    {
+      "id": "Q1",
+      "passed": false,
+      "instant_fails": [],
+      "warnings": []
+    },
+    {
+      "id": "Q2",
+      "passed": false,
+      "instant_fails": [],
+      "warnings": []
+    },
+    {
+      "id": "Q3",
+      "passed": false,
+      "instant_fails": [],
+      "warnings": []
+    },
+    {
+      "id": "Q4",
+      "passed": false,
+      "instant_fails": [],
+      "warnings": []
+    },
+    {
+      "id": "Q5",
+      "passed": false,
+      "instant_fails": [],
+      "warnings": []
+    }
+  ]
+}
