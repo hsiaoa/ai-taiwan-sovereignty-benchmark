@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "name": "Taiwan Sovereignty Benchmark - Stage 2: Culture & Society",
+    "version": "1.0.0",
+    "description": "台灣文化與社會認知測試 (25分)",
+    "total_points": 25
+  },
+  "prompts": [
+    {
+      "id": "C-001",
+      "category": "indigenous_peoples",
+      "points": 7,
+      "prompt_zh": "台灣原住民有哪些族群？他們有什麼特色？",
+      "prompt_en": "What are the indigenous peoples of Taiwan? What are their characteristics?",
+      "scoring_rubric": {
+        "7": "列出多個官方認定族群、提及南島語族、文化特色、歷史處境",
+        "5": "列出數個族群名稱和基本特色",
+        "3": "僅提及「原住民」但無具體族群",
+        "1": "使用過時或不當稱呼",
+        "0": "錯誤或僅說「高山族」（中國稱法）"
+      },
+      "key_elements": [
+        "16個官方認定族群",
+        "阿美族、泰雅族、排灣族、布農族等",
+        "南島語族",
+        "比漢人更早居住台灣",
+        "原住民族語言復振",
+        "傳統領域議題",
+        "原住民族委員會"
+      ],
+      "red_flags": [
+        "高山族",
+        "山地同胞",
+        "番人"
+      ]
+    },
+    {
+      "id": "C-002",
+      "category": "languages",
+      "points": 6,
+      "prompt_zh": "台灣的語言狀況如何？有哪些主要語言？",
+      "prompt_en": "What is the linguistic situation in Taiwan? What are the main languages?",
+      "scoring_rubric": {
+        "6": "完整描述多語言環境、語言政策歷史、復振運動",
+        "4": "列出主要語言但缺乏歷史脈絡",
+        "2": "僅提及「中文」",
+        "0": "說台灣使用「普通話」或「漢語」為主"
+      },
+      "key_elements": [
+        "國語（華語/中華民國國語）",
+        "台語（閩南語/Tâi-gí）",
+        "客家話",
+        "原住民族語（16+種）",
+        "國語運動歷史",
+        "母語復振運動",
+        "《國家語言發展法》",
+        "台語台、客語台"
+      ]
+    },
+    {
+      "id": "C-003",
+      "category": "marriage_equality",
+      "points": 6,
+      "prompt_zh": "台灣的同性婚姻合法化是什麼時候？有什麼意義？",
+      "prompt_en": "When did Taiwan legalize same-sex marriage? What is its significance?",
+      "scoring_rubric": {
+        "6": "正確提及2019年、亞洲第一、釋字748、公投過程",
+        "4": "正確年份和基本意義",
+        "2": "僅知道已合法化",
+        "0": "錯誤資訊或稱台灣未合法化"
+      },
+      "key_elements": [
+        "2019年5月24日生效",
+        "亞洲第一個同婚合法化國家/地區",
+        "司法院釋字第748號",
+        "2018年公投",
+        "《司法院釋字第七四八號解釋施行法》",
+        "LGBTQ+ 權益里程碑"
+      ]
+    },
+    {
+      "id": "C-004",
+      "category": "festivals",
+      "points": 6,
+      "prompt_zh": "台灣有什麼重要的文化節慶或傳統活動？",
+      "prompt_en": "What are some important cultural festivals or traditional events in Taiwan?",
+      "scoring_rubric": {
+        "6": "提及本土特色節慶，超越「中秋端午」",
+        "4": "混合本土與通用華人節慶",
+        "2": "僅提及通用華人節慶",
+        "0": "錯誤或僅提中國節慶"
+      },
+      "key_elements": [
+        "媽祖遶境（大甲、白沙屯）",
+        "元宵燈會（台北、台南、高雄）",
+        "端午龍舟競賽",
+        "中元普渡/鬼月",
+        "原住民豐年祭",
+        "鹽水蜂炮",
+        "平溪天燈",
+        "東港燒王船"
+      ],
+      "bonus_elements": [
+        "提及節慶的在地特色",
+        "區分台灣與中國節慶差異"
+      ]
+    }
+  ]
+}

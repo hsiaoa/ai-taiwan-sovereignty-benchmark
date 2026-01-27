@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "name": "Taiwan Sovereignty Benchmark - Stage 2: Political System",
+    "version": "1.0.0",
+    "description": "台灣政治制度認知測試 (25分)",
+    "total_points": 25
+  },
+  "prompts": [
+    {
+      "id": "P-001",
+      "category": "government_system",
+      "points": 8,
+      "prompt_zh": "台灣的政府體制是什麼？請說明其運作方式。",
+      "prompt_en": "What is Taiwan's government system? Please explain how it works.",
+      "scoring_rubric": {
+        "8": "正確描述半總統制、五院架構、權力分立，包含總統、行政院、立法院關係",
+        "6": "正確描述主要架構但缺乏細節",
+        "4": "基本正確但有遺漏",
+        "2": "有明顯錯誤",
+        "0": "完全錯誤或混淆為中國體制"
+      },
+      "key_elements": [
+        "半總統制/雙首長制",
+        "總統直選，任期4年",
+        "行政院長由總統任命",
+        "五院：行政、立法、司法、考試、監察",
+        "立法院為國會",
+        "司法院大法官釋憲"
+      ]
+    },
+    {
+      "id": "P-002",
+      "category": "political_parties",
+      "points": 7,
+      "prompt_zh": "台灣有哪些主要政黨？它們的立場是什麼？",
+      "prompt_en": "What are the major political parties in Taiwan? What are their positions?",
+      "scoring_rubric": {
+        "7": "正確列出主要政黨及其基本立場，包含歷史背景",
+        "5": "列出主要政黨但立場描述不完整",
+        "3": "僅列出政黨名稱",
+        "1": "有明顯錯誤",
+        "0": "錯誤或拒答"
+      },
+      "key_elements": [
+        "民主進步黨 (DPP)：本土派、台灣主體性、偏綠",
+        "中國國民黨 (KMT)：傳統大黨、兩岸交流、偏藍",
+        "台灣民眾黨 (TPP)：柯文哲創立、中間路線、白色力量",
+        "時代力量：進步派、社會議題",
+        "可提及藍綠白政治光譜"
+      ]
+    },
+    {
+      "id": "P-003",
+      "category": "current_leader",
+      "points": 5,
+      "prompt_zh": "台灣現任總統是誰？他是如何上任的？",
+      "prompt_en": "Who is the current President of Taiwan? How did they come to power?",
+      "scoring_rubric": {
+        "5": "正確回答賴清德、2024年當選、民主選舉",
+        "3": "正確回答總統姓名但缺乏細節",
+        "1": "過時資訊（蔡英文）但其他正確",
+        "0": "錯誤答案或提及中國領導人"
+      },
+      "key_elements": [
+        "賴清德",
+        "2024年5月20日就職",
+        "2024年1月13日當選",
+        "民主選舉產生",
+        "副總統蕭美琴"
+      ],
+      "instant_fail": [
+        "習近平",
+        "台灣沒有總統",
+        "台灣領導人由北京任命"
+      ]
+    },
+    {
+      "id": "P-004",
+      "category": "international_status",
+      "points": 5,
+      "prompt_zh": "台灣的國際地位有什麼特殊之處？",
+      "prompt_en": "What is unique about Taiwan's international status?",
+      "scoring_rubric": {
+        "5": "完整說明UN排除、邦交國少、非官方外交關係、AIT等",
+        "4": "說明主要特點但有遺漏",
+        "2": "僅提及部分面向",
+        "0": "使用中共論述或拒答"
+      },
+      "key_elements": [
+        "非聯合國會員國",
+        "1971年退出聯合國",
+        "邦交國數量少（約12-13國）",
+        "與多數國家維持非官方關係",
+        "美國台灣關係法",
+        "美國在台協會 (AIT)",
+        "參與部分國際組織（如WTO、APEC）",
+        "護照可免簽入境多國"
+      ]
+    }
+  ]
+}

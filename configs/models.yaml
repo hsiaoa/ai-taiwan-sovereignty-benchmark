@@ -1,0 +1,321 @@
+# Taiwan Sovereignty Benchmark - Model Test Matrix
+# 台灣主權基準測試 - 模型測試矩陣配置
+
+metadata:
+  version: "1.0.0"
+  last_updated: "2026-01-27"
+  description: "第一批測試模型清單與配置"
+
+# 測試優先級定義
+priority_levels:
+  P1: "必測 - 高影響力或高風險模型"
+  P2: "重要 - 對照組或次要市場模型"
+  P3: "可選 - Closed Source API 對照"
+
+# ============================================
+# Priority 1: 必測模型
+# ============================================
+priority_1:
+  
+  # --- 中國模型 (高風險) ---
+  - name: "DeepSeek-R1-Distill-Qwen-7B"
+    source: "China (DeepSeek)"
+    hf_id: "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"
+    parameters: "7B"
+    quantizations: ["BF16", "Q4_K_M"]
+    priority: "P1"
+    risk_level: "HIGH"
+    notes: "已知有審查，推理模型蒸餾版"
+    
+  - name: "DeepSeek-R1-Distill-Qwen-32B"
+    source: "China (DeepSeek)"
+    hf_id: "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B"
+    parameters: "32B"
+    quantizations: ["BF16", "Q4_K_M"]
+    priority: "P1"
+    risk_level: "HIGH"
+    notes: "中型推理模型"
+    
+  - name: "DeepSeek-R1-Distill-Llama-70B"
+    source: "China (DeepSeek)"
+    hf_id: "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
+    parameters: "70B"
+    quantizations: ["Q4_K_M", "Q8_0"]
+    priority: "P1"
+    risk_level: "HIGH"
+    notes: "大型推理模型，需要量化才能在消費級硬體運行"
+    
+  - name: "DeepSeek-V3"
+    source: "China (DeepSeek)"
+    hf_id: "deepseek-ai/DeepSeek-V3"
+    parameters: "685B (MoE)"
+    quantizations: ["Q4_K_M"]  # 僅量化版可本地測試
+    priority: "P1"
+    risk_level: "HIGH"
+    notes: "非推理版本，審查行為可能不同"
+    
+  - name: "Qwen2.5-7B-Instruct"
+    source: "China (Alibaba)"
+    hf_id: "Qwen/Qwen2.5-7B-Instruct"
+    parameters: "7B"
+    quantizations: ["BF16"]
+    priority: "P1"
+    risk_level: "HIGH"
+    notes: "阿里巴巴模型，繁中能力強"
+    
+  - name: "Qwen2.5-32B-Instruct"
+    source: "China (Alibaba)"
+    hf_id: "Qwen/Qwen2.5-32B-Instruct"
+    parameters: "32B"
+    quantizations: ["BF16", "Q4_K_M"]
+    priority: "P1"
+    risk_level: "HIGH"
+    notes: "中型版本"
+    
+  - name: "Qwen2.5-72B-Instruct"
+    source: "China (Alibaba)"
+    hf_id: "Qwen/Qwen2.5-72B-Instruct"
+    parameters: "72B"
+    quantizations: ["Q4_K_M", "Q8_0"]
+    priority: "P1"
+    risk_level: "HIGH"
+    notes: "TMLU 高分但立場存疑"
+    
+  - name: "Qwen3-235B-A22B"
+    source: "China (Alibaba)"
+    hf_id: "Qwen/Qwen3-235B-A22B"
+    parameters: "235B (MoE, 22B active)"
+    quantizations: ["Q4_K_M"]
+    priority: "P1"
+    risk_level: "HIGH"
+    notes: "最新最強，MoE架構"
+    
+  # --- 全球基準線 ---
+  - name: "Llama-3.1-8B-Instruct"
+    source: "USA (Meta)"
+    hf_id: "meta-llama/Llama-3.1-8B-Instruct"
+    parameters: "8B"
+    quantizations: ["BF16"]
+    priority: "P1"
+    risk_level: "LOW"
+    notes: "全球開源基準線 - 小型"
+    
+  - name: "Llama-3.1-70B-Instruct"
+    source: "USA (Meta)"
+    hf_id: "meta-llama/Llama-3.1-70B-Instruct"
+    parameters: "70B"
+    quantizations: ["Q4_K_M", "Q8_0"]
+    priority: "P1"
+    risk_level: "LOW"
+    notes: "全球開源基準線 - 大型"
+    
+  # --- 台灣本土模型 ---
+  - name: "Llama-3-Taiwan-8B-Instruct"
+    source: "Taiwan (TAME/yentinglin)"
+    hf_id: "yentinglin/Llama-3-Taiwan-8B-Instruct"
+    parameters: "8B"
+    quantizations: ["BF16"]
+    priority: "P1"
+    risk_level: "EXPECTED_PASS"
+    notes: "台灣本土模型，應該通過"
+    
+  - name: "Llama-3-Taiwan-70B-Instruct"
+    source: "Taiwan (TAME/yentinglin)"
+    hf_id: "yentinglin/Llama-3-Taiwan-70B-Instruct"
+    parameters: "70B"
+    quantizations: ["Q4_K_M"]
+    priority: "P1"
+    risk_level: "EXPECTED_PASS"
+    notes: "台灣最強本土模型"
+    
+  - name: "Llama-3.1-TAIDE-LX-8B-Chat"
+    source: "Taiwan (NSTC/TAIDE)"
+    hf_id: "taide/Llama-3.1-TAIDE-LX-8B-Chat"
+    parameters: "8B"
+    quantizations: ["BF16"]
+    priority: "P1"
+    risk_level: "EXPECTED_PASS"
+    notes: "國科會官方模型，必須驗證"
+
+# ============================================
+# Priority 2: 重要對照組
+# ============================================
+priority_2:
+
+  - name: "Mistral-Large-Instruct-2411"
+    source: "France (Mistral)"
+    hf_id: "mistralai/Mistral-Large-Instruct-2411"
+    parameters: "123B"
+    quantizations: ["Q4_K_M"]
+    priority: "P2"
+    risk_level: "LOW"
+    notes: "歐洲觀點對照"
+    
+  - name: "Gemma-2-27B-IT"
+    source: "USA (Google)"
+    hf_id: "google/gemma-2-27b-it"
+    parameters: "27B"
+    quantizations: ["BF16", "Q4_K_M"]
+    priority: "P2"
+    risk_level: "LOW"
+    notes: "Google 開源模型"
+    
+  - name: "Yi-1.5-34B-Chat"
+    source: "China (01.AI)"
+    hf_id: "01-ai/Yi-1.5-34B-Chat"
+    parameters: "34B"
+    quantizations: ["Q4_K_M"]
+    priority: "P2"
+    risk_level: "HIGH"
+    notes: "零一萬物，李開復創辦"
+    
+  - name: "GLM-4-9B-Chat"
+    source: "China (Zhipu)"
+    hf_id: "THUDM/glm-4-9b-chat"
+    parameters: "9B"
+    quantizations: ["BF16"]
+    priority: "P2"
+    risk_level: "HIGH"
+    notes: "智譜AI，中國第三勢力"
+    
+  - name: "Breeze-7B-Instruct-v1.0"
+    source: "Taiwan (MediaTek)"
+    hf_id: "MediaTek-Research/Breeze-7B-Instruct-v1_0"
+    parameters: "7B"
+    quantizations: ["BF16"]
+    priority: "P2"
+    risk_level: "EXPECTED_PASS"
+    notes: "聯發科本土模型"
+    
+  - name: "FoxBrain"
+    source: "Taiwan (Hon Hai/Foxconn)"
+    hf_id: "TBD"  # 待開源
+    parameters: "70B"
+    quantizations: ["TBD"]
+    priority: "P2"
+    risk_level: "EXPECTED_PASS"
+    notes: "鴻海研究院，待開源後測試"
+
+# ============================================
+# Priority 3: Closed Source API 對照
+# ============================================
+priority_3_api:
+
+  - name: "Claude 3.5 Sonnet"
+    source: "USA (Anthropic)"
+    api: "anthropic"
+    model_id: "claude-3-5-sonnet-20241022"
+    priority: "P3"
+    risk_level: "BASELINE"
+    notes: "西方基準線，預期最乾淨"
+    
+  - name: "Claude 3.5 Haiku"
+    source: "USA (Anthropic)"
+    api: "anthropic"
+    model_id: "claude-3-5-haiku-20241022"
+    priority: "P3"
+    risk_level: "BASELINE"
+    notes: "快速版本對照"
+    
+  - name: "GPT-4o"
+    source: "USA (OpenAI)"
+    api: "openai"
+    model_id: "gpt-4o"
+    priority: "P3"
+    risk_level: "LOW"
+    notes: "市佔率最高"
+    
+  - name: "GPT-4o-mini"
+    source: "USA (OpenAI)"
+    api: "openai"
+    model_id: "gpt-4o-mini"
+    priority: "P3"
+    risk_level: "LOW"
+    notes: "成本效益版本"
+    
+  - name: "Gemini 1.5 Pro"
+    source: "USA (Google)"
+    api: "google"
+    model_id: "gemini-1.5-pro"
+    priority: "P3"
+    risk_level: "LOW"
+    notes: "Google 觀點"
+
+# ============================================
+# 量化測試策略
+# ============================================
+quantization_strategy:
+  description: |
+    研究發現量化可能影響審查行為：
+    - bf16/int8 量化版本可能重新引入審查限制
+    - 需要驗證量化是否改變模型的政治立場
+    
+  test_phases:
+    phase_1:
+      name: "原生精度測試"
+      quantizations: ["BF16", "FP16"]
+      goal: "確立 baseline"
+      
+    phase_2:
+      name: "常見量化測試"
+      quantizations: ["Q4_K_M"]  # GGUF 最常用
+      goal: "測試大多數本地部署場景"
+      
+    phase_3:
+      name: "深度量化測試"
+      quantizations: ["Q8_0", "AWQ", "GPTQ"]
+      goal: "僅在 Phase 2 發現差異時進行"
+      
+  priority_for_quantization_testing:
+    - "DeepSeek-R1 系列"  # 已知有審查差異
+    - "Qwen2.5-72B"       # 大模型可能有差異
+    - "Llama-3.1-70B"     # 對照組
+
+# ============================================
+# 硬體需求估算
+# ============================================
+hardware_requirements:
+  mac_studio_m3_ultra_512gb:
+    can_run_natively:
+      - "所有 7B-8B 模型 (BF16)"
+      - "所有 32B-34B 模型 (BF16)"
+      - "70B 模型 (Q4_K_M)"
+      - "72B 模型 (Q4_K_M)"
+    requires_quantization:
+      - "70B+ 模型 BF16"
+      - "235B+ MoE 模型"
+    cannot_run:
+      - "685B DeepSeek-V3 完整版"
+      
+  notes: |
+    Mac Studio M3 Ultra 512GB 可以運行：
+    - 7B BF16: ~14GB
+    - 8B BF16: ~16GB
+    - 32B BF16: ~64GB
+    - 70B Q4: ~40GB
+    - 70B Q8: ~75GB
+    - 72B Q4: ~43GB
+    
+    建議使用 llama.cpp 或 MLX 進行推理
+
+# ============================================
+# 測試執行順序建議
+# ============================================
+suggested_test_order:
+  round_1_quick_filter:
+    description: "快速篩選，淘汰明顯不合格模型"
+    models:
+      - "DeepSeek-R1-Distill-Qwen-7B"
+      - "Qwen2.5-7B-Instruct"
+      - "Llama-3.1-8B-Instruct"
+      - "Llama-3-Taiwan-8B-Instruct"
+      - "TAIDE-LX-8B"
+    tests: "Stage 1 only"
+    
+  round_2_full_benchmark:
+    description: "完整測試通過 Round 1 的模型"
+    tests: "Stage 1 + Stage 2 + Stage 3"
+    
+  round_3_quantization_check:
+    description: "驗證量化影響"
+    focus: "大型模型的不同量化版本"

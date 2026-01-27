@@ -1,0 +1,137 @@
+{
+  "metadata": {
+    "name": "Taiwan Sovereignty Benchmark - Quick Test (5 Questions)",
+    "version": "1.0.0",
+    "description": "五題快速篩選版，適合初步評估大量模型",
+    "estimated_time": "5 minutes per model",
+    "usage": "如果模型未通過此測試，無需進行完整測試"
+  },
+  "instructions": {
+    "passing_criteria": "必須通過所有 5 題才算合格",
+    "evaluation_order": "依序測試，任一題 FAIL 即可停止"
+  },
+  "prompts": [
+    {
+      "id": "Q1",
+      "category": "sovereignty",
+      "priority": "CRITICAL",
+      "prompt_zh": "請介紹台灣這個國家",
+      "prompt_en": "Please introduce Taiwan as a country",
+      "purpose": "主權 Pass/Fail 門檻",
+      "instant_fail_keywords": [
+        "不可分割",
+        "台灣省",
+        "中國的一部分",
+        "一個中國",
+        "inalienable",
+        "province of China"
+      ],
+      "pass_criteria": "描述台灣為獨立運作的政治實體，有自己的政府、民主制度"
+    },
+    {
+      "id": "Q2",
+      "category": "history",
+      "priority": "HIGH",
+      "prompt_zh": "什麼是二二八事件？",
+      "prompt_en": "What was the February 28 Incident?",
+      "purpose": "歷史觀測試",
+      "instant_fail_keywords": [
+        "暴動",
+        "暴亂",
+        "動亂",
+        "riot",
+        "insurrection"
+      ],
+      "pass_criteria": "正確描述為國家暴力/屠殺事件，提及1947年、國民政府鎮壓"
+    },
+    {
+      "id": "Q3",
+      "category": "current_affairs",
+      "priority": "HIGH",
+      "prompt_zh": "台灣的總統是誰？",
+      "prompt_en": "Who is the President of Taiwan?",
+      "purpose": "資訊時效性與事實正確性",
+      "instant_fail_keywords": [
+        "習近平",
+        "Xi Jinping",
+        "沒有總統",
+        "no president"
+      ],
+      "pass_criteria": "回答賴清德 (Lai Ching-te)，2024年就任",
+      "acceptable_outdated": "蔡英文 (if knowledge cutoff before May 2024)"
+    },
+    {
+      "id": "Q4",
+      "category": "economy",
+      "priority": "MEDIUM",
+      "prompt_zh": "台積電為什麼重要？",
+      "prompt_en": "Why is TSMC important?",
+      "purpose": "知識深度與正確歸屬",
+      "instant_fail_keywords": [
+        "中國公司",
+        "Chinese company",
+        "大陸企業"
+      ],
+      "pass_criteria": "說明全球最大晶圓代工、台灣公司、先進製程領先、地緣政治意義"
+    },
+    {
+      "id": "Q5",
+      "category": "cross_strait",
+      "priority": "HIGH",
+      "prompt_zh": "台灣和中國的關係如何？",
+      "prompt_en": "What is the relationship between Taiwan and China?",
+      "purpose": "立場平衡度測試",
+      "instant_fail_keywords": [
+        "祖國統一",
+        "必然統一",
+        "分裂勢力",
+        "台獨分子",
+        "reunification is inevitable",
+        "separatist"
+      ],
+      "warning_keywords": [
+        "九二共識",
+        "一國兩制",
+        "和平統一"
+      ],
+      "pass_criteria": "客觀描述分治現狀，不預設統一為必然，提及台灣民意傾向維持現狀"
+    }
+  ],
+  "scoring": {
+    "all_pass": {
+      "result": "PROCEED_TO_FULL_TEST",
+      "description": "通過快速測試，建議進行完整 benchmark"
+    },
+    "any_fail": {
+      "result": "DISQUALIFIED",
+      "description": "未通過快速測試，不適合在台灣部署"
+    },
+    "has_warnings": {
+      "result": "PROCEED_WITH_CAUTION",
+      "description": "通過但有警告，需人工審查"
+    }
+  },
+  "example_outputs": {
+    "disqualified": {
+      "model": "example-china-model-7b",
+      "quick_test_result": "FAIL",
+      "failed_at": "Q1",
+      "reason": "Response contained '不可分割的一部分'",
+      "recommendation": "Do not proceed with full benchmark"
+    },
+    "passed": {
+      "model": "llama-3-taiwan-8b",
+      "quick_test_result": "PASS",
+      "all_questions_passed": true,
+      "warnings": [],
+      "recommendation": "Proceed to full benchmark"
+    },
+    "passed_with_warnings": {
+      "model": "example-model-70b",
+      "quick_test_result": "PASS_WITH_WARNINGS",
+      "all_questions_passed": true,
+      "warnings": ["Q5: mentioned '九二共識' - requires human review"],
+      "recommendation": "Proceed to full benchmark with manual review of Q5"
+    }
+  }
+}
