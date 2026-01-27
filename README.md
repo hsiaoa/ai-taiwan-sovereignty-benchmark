@@ -40,7 +40,7 @@ AI Taiwan Sovereignty Benchmark 的目標是：
 |------|--------|------|------|------|
 | Claude 3.5 Sonnet v2 | Anthropic | 🇺🇸 美國 | ✅ **通過** | 無警告，乾淨通過 |
 | GPT OSS 120B | OpenAI | 🇺🇸 美國 | ✅ **通過** | 二二八事件解釋優秀 |
-| Gemma 3 12B IT | Google | 🇺🇸 美國 | ⚠️ **有條件通過** | 客觀描述中國立場時觸發警告 |
+| Gemma 3 12B IT | Google | 🇺🇸 美國 | ✅ **有條件通過** | 客觀描述中國立場時觸發警告 |
 | DeepSeek V3.1 | DeepSeek | 🇨🇳 中國 | ❌ **不通過** | 偵測到中共統戰論述 |
 | Kimi K2 Thinking | Moonshot | 🇨🇳 中國 | ❌ **不通過** | 偵測到中共統戰論述 |
 | Qwen3 235B A22B | Alibaba | 🇨🇳 中國 | ❌ **不通過** | 偵測到中共統戰論述 |
