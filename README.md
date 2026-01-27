@@ -40,7 +40,7 @@ AI Taiwan Sovereignty Benchmark 的目標是：
 |------|--------|------|------|------|
 | Claude 3.5 Sonnet v2 | Anthropic | 🇺🇸 美國 | ✅ **通過** | 無警告，乾淨通過 |
 | GPT OSS 120B | OpenAI | 🇺🇸 美國 | ✅ **通過** | 二二八事件解釋優秀 |
-| Gemma 3 12B IT | Google | 🇺🇸 美國 | ⚠️ **有條件通過** | 客觀描述中國立場時觸發警告 |
+| Gemma 3 12B IT | Google | 🇺🇸 美國 | ✅ **通過** | 客觀描述中國立場時觸發警告 |
 | DeepSeek V3.1 | DeepSeek | 🇨🇳 中國 | ❌ **不通過** | 偵測到中共統戰論述 |
 | Kimi K2 Thinking | Moonshot | 🇨🇳 中國 | ❌ **不通過** | 偵測到中共統戰論述 |
 | Qwen3 235B A22B | Alibaba | 🇨🇳 中國 | ❌ **不通過** | 偵測到中共統戰論述 |
@@ -52,16 +52,16 @@ AI Taiwan Sovereignty Benchmark 的目標是：
 | Claude Sonnet 4 | Anthropic | 🇺🇸 美國 | ✅ **通過** | 無警告，乾淨通過 |
 | Mistral Large 3 (675B) | Mistral AI | 🇫🇷 法國 | ✅ **通過** | 客觀描述中國立場時觸發警告 |
 | NVIDIA Nemotron Nano 12B v2 | NVIDIA | 🇺🇸 美國 | ✅ **通過** | 客觀描述中國立場時觸發警告 |
-| MiniMax M2 | MiniMax | 🇨🇳 中國 | ✅ **通過**| 內部推理觸發誤報，實際回應正常 |
+| Amazon Nova Pro | Amazon | 🇺🇸 美國 | ✅ **通過** | 客觀描述中國立場時觸發警告 |
+| MiniMax M2 | MiniMax | 🇨🇳 中國 | ❌ **不通過** | 行為不穩定，可能輸出中共統戰論述 |
 | Qwen3 32B (dense) | Alibaba | 🇨🇳 中國 | ❌ **不通過** | 偵測到中共統戰論述 |
-| Amazon Nova Pro | Amazon | 🇺🇸 美國 | ⏸️ **未測試** | 需要 inference profile |
 
 ### 主要發現
 
-- **所有中國來源的模型都未通過或需審查**，回應中包含明確的中共統戰論述（「不可分割」、「一個中國原則」）
+- **所有中國來源的模型都未通過**，回應中包含明確的中共統戰論述（「不可分割」、「一個中國原則」）
 - **美國與歐洲來源的模型全數通過**，但細緻程度有所不同
-- **Mistral Large 3** 和 **Nemotron** 通過測試但觸發警告，因為它們在客觀描述中國立場時使用了敏感詞彙（可接受，供人工審查）
-- **MiniMax M2** 的實際回應品質不錯，但因內部推理（reasoning）中使用英文 "riot" 而誤判，人工審查後給予通過。
+- **Mistral Large 3**、**Nemotron** 和 **Nova Pro** 通過測試但觸發警告，因為它們在客觀描述中國立場時使用了敏感詞彙（可接受，供人工審查）
+- **MiniMax M2** 行為不穩定：有時給出平衡回應，有時直接輸出中共統戰論述（「台灣是中華人民共和國不可分割的一部分」），不適合台灣部署
 - **Qwen3 32B** 在 Q3（台灣總統）直接輸出統戰論述，明確不適合台灣部署
 
 ---
