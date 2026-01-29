@@ -362,8 +362,8 @@ MIT License
 
 ## 相關資源
 
-- [Open TW LLM Leaderboard](https://huggingface.co/spaces/yentinglin/open-tw-llm-leaderboard) - 繁中能力排行榜
-- [TMLU Benchmark](https://huggingface.co/datasets/miulab/tmlu) - 台灣學科知識測試
+- [Open TW LLM](https://huggingface.co/collections/yentinglin/taiwan-llm) - 繁中能力 LLM
+- [TMLU Benchmark](https://arxiv.org/pdf/2403.20180) - 台灣學科知識測試
 - [augmxnt/deccp](https://huggingface.co/datasets/augmxnt/deccp) - 中國審查偵測資料集
 
 ---
