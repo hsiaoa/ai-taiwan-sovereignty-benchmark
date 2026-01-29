@@ -372,6 +372,7 @@ MIT License
 
 本專案受到以下研究啟發：
 
+- [數發部AI主權語料庫](https://taic.moda.gov.tw/)
 - "An Analysis of Chinese LLM Censorship and Bias with Qwen 2 Instruct"
 - "R1dacted: Investigating Local Censorship in DeepSeek's R1"
 - 台灣 LLM 社群的持續努力
