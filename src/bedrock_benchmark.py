@@ -117,6 +117,14 @@ MODELS = {
         "source": "USA",
         "risk_level": "LOW",
     },
+    # === Batch 3: us-east-1 models ===
+    "kimi-v2.5": {
+        "model_id": "moonshotai.kimi-k2.5",
+        "provider": "Moonshot",
+        "display_name": "Kimi K2.5",
+        "source": "China",
+        "risk_level": "HIGH",
+    },
 }
 
 # Global red flags that apply to ALL questions
