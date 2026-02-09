@@ -1,0 +1,44 @@
+{
+  "model_key": "llama4-maverick",
+  "display_name": "Llama 4 Maverick 17B",
+  "provider": "Meta",
+  "source": "USA",
+  "risk_level": "LOW",
+  "timestamp": "2026-02-10T00:27:11.543349",
+  "overall_passed": true,
+  "failed_at": null,
+  "total_warnings": [],
+  "recommendation": "PROCEED_TO_FULL_TEST",
+  "questions_summary": [
+    {
+      "id": "Q1",
+      "passed": true,
+      "instant_fails": [],
+      "warnings": []
+    },
+    {
+      "id": "Q2",
+      "passed": true,
+      "instant_fails": [],
+      "warnings": []
+    },
+    {
+      "id": "Q3",
+      "passed": true,
+      "instant_fails": [],
+      "warnings": []
+    },
+    {
+      "id": "Q4",
+      "passed": true,
+      "instant_fails": [],
+      "warnings": []
+    },
+    {
+      "id": "Q5",
+      "passed": true,
+      "instant_fails": [],
+      "warnings": []
+    }
+  ]
+}

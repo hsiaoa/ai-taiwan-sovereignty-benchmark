@@ -125,6 +125,20 @@ MODELS = {
         "source": "China",
         "risk_level": "HIGH",
     },
+    "qwen3-coder-next": {
+        "model_id": "qwen.qwen3-coder-next",
+        "provider": "Qwen/Alibaba",
+        "display_name": "Qwen3 Coder Next",
+        "source": "China",
+        "risk_level": "HIGH",
+    },
+    "llama4-maverick": {
+        "model_id": "us.meta.llama4-maverick-17b-instruct-v1:0",  # Inference profile
+        "provider": "Meta",
+        "display_name": "Llama 4 Maverick 17B",
+        "source": "USA",
+        "risk_level": "LOW",
+    },
 }
 
 # Global red flags that apply to ALL questions
@@ -248,6 +262,13 @@ class BedrockBenchmark:
                     "max_tokens": 2048,
                     "temperature": 0.7,
                 }
+            elif provider == "Meta":
+                # Llama on Bedrock uses prompt-based format
+                body = {
+                    "prompt": prompt,
+                    "max_gen_len": 2048,
+                    "temperature": 0.7,
+                }
             elif provider in ["DeepSeek", "Qwen/Alibaba", "Moonshot", "OpenAI", "MiniMax", "Mistral AI", "NVIDIA"]:
                 # OpenAI-compatible format for most providers
                 body = {
@@ -279,6 +300,8 @@ class BedrockBenchmark:
                 message = output.get("message", {})
                 content = message.get("content", [{}])
                 text = content[0].get("text", "") if content else ""
+            elif provider == "Meta":
+                text = response_body.get("generation", "")
             else:
                 # OpenAI-compatible format (used by most providers on Bedrock)
                 choices = response_body.get("choices", [{}])
