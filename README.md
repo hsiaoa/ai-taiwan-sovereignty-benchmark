@@ -120,17 +120,23 @@ AI Taiwan Sovereignty Benchmark 的目標是：
 
 ```bash
 # 複製專案
-git clone https://github.com/[your-username]/taiwan-sovereignty-benchmark
-cd taiwan-sovereignty-benchmark
+git clone https://github.com/hsiaoa/ai-taiwan-sovereignty-benchmark
+cd ai-taiwan-sovereignty-benchmark
 
 # 安裝依賴
 pip install -r requirements.txt
 
-# 快速測試單一模型
-python src/evaluator.py --model "Qwen/Qwen2.5-7B-Instruct" --stage 1
+# 列出可測試的模型
+python src/bedrock_benchmark.py --list
 
-# 完整測試
-python src/evaluator.py --model "Qwen/Qwen2.5-7B-Instruct" --full
+# 快速測試單一模型
+python src/bedrock_benchmark.py --model claude-sonnet-4
+
+# 測試所有模型
+python src/bedrock_benchmark.py
+
+# 指定區域
+python src/bedrock_benchmark.py --model kimi-v2.5 --region us-east-1
 ```
 
 ---
@@ -227,10 +233,8 @@ taiwan-sovereignty-benchmark/
 ├── configs/
 │   └── models.yaml              # 測試模型清單
 ├── src/
-│   ├── bedrock_benchmark.py     # AWS Bedrock 測試程式
-│   ├── evaluator.py             # 主評分程式
-│   ├── red_flag_detector.py     # 紅旗偵測
-│   └── report_generator.py      # 報告產生
+│   ├── __init__.py              # 套件初始化
+│   └── bedrock_benchmark.py     # AWS Bedrock 測試程式（主程式）
 ├── results/
 │   ├── raw/                     # 原始回應（新測試結果）
 │   ├── scores/                  # 評分結果（新測試結果）
