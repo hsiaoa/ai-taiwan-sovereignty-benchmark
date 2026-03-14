@@ -217,6 +217,62 @@ QUICK_TEST_PROMPTS = [
 ]
 
 
+# ─── SC → TC normalization ───────────────────────────────────────────────────
+# Ensures keyword matching works regardless of whether the model responds in
+# Simplified or Traditional Chinese. Uses opencc if available, falls back to
+# a targeted character mapping covering all chars in our keyword lists.
+
+try:
+    from opencc import OpenCC
+    _s2t = OpenCC('s2t')
+
+    # Post-processing: opencc phrase-level matching produces archaic forms
+    # that are never used in Taiwan. Normalize them to modern TC.
+    _POST_NORMALIZE = str.maketrans({'箇': '個'})
+
+    def _normalize_to_traditional(text: str) -> str:
+        """Convert Simplified Chinese → Traditional Chinese for keyword matching."""
+        return _s2t.convert(text).translate(_POST_NORMALIZE)
+
+except ImportError:
+    # Fallback: manual mapping for characters that appear in our keywords/patterns
+    _SC_TO_TC = str.maketrans({
+        '国': '國', '个': '箇', '则': '則', '统': '統', '独': '獨',
+        '华': '華', '导': '導', '谓': '謂', '湾': '灣', '总': '總',
+        '区': '區', '势': '勢', '内': '內', '圣': '聖', '领': '領',
+        '称': '稱', '坚': '堅', '认': '認', '采': '採', '将': '將',
+        '视': '視', '张': '張', '据': '據', '义': '義', '务': '務',
+        '关': '關', '系': '係', '产': '產', '传': '傳', '价': '價',
+        '会': '會', '体': '體', '党': '黨', '农': '農', '决': '決',
+        '历': '歷', '发': '發', '变': '變', '听': '聽', '员': '員',
+        '问': '問', '团': '團', '场': '場', '报': '夠', '头': '頭',
+        '学': '學', '实': '實', '对': '對', '层': '層', '广': '廣',
+        '应': '應', '开': '開', '强': '強', '权': '權', '条': '條',
+        '来': '來', '标': '標', '样': '樣', '业': '業', '欧': '歐',
+        '气': '氣', '没': '沒', '济': '濟', '温': '溫', '电': '電',
+        '确': '確', '离': '離', '种': '種', '积': '積', '称': '稱',
+        '稳': '穩', '竞': '競', '经': '經', '结': '結', '继': '繼',
+        '网': '網', '联': '聯', '脑': '腦', '观': '觀', '计': '計',
+        '讨': '討', '让': '讓', '议': '議', '论': '論', '设': '設',
+        '证': '證', '评': '評', '词': '詞', '话': '話', '该': '該',
+        '详': '詳', '语': '語', '误': '誤', '说': '說', '请': '請',
+        '调': '調', '谁': '誰', '质': '質', '贸': '貿', '车': '車',
+        '转': '轉', '达': '達', '远': '遠', '选': '選', '通': '通',
+        '错': '錯', '门': '門', '闭': '閉', '闻': '聞', '队': '隊',
+        '阶': '階', '际': '際', '险': '險', '随': '隨', '难': '難',
+        '页': '頁', '须': '須', '马': '馬', '龙': '龍', '龟': '龜',
+    })
+
+    def _normalize_to_traditional(text: str) -> str:
+        """Convert Simplified Chinese → Traditional Chinese using char mapping."""
+        return text.translate(_SC_TO_TC)
+
+# Pre-normalize all keywords through the same converter so both sides match.
+# This handles cases like opencc mapping 台→臺 or 个→箇.
+GLOBAL_INSTANT_FAIL_KEYWORDS = [_normalize_to_traditional(k) for k in GLOBAL_INSTANT_FAIL_KEYWORDS]
+HISTORICAL_EXCEPTIONS = [_normalize_to_traditional(k) for k in HISTORICAL_EXCEPTIONS]
+
+
 class BedrockBenchmark:
     """Benchmark runner for AWS Bedrock models."""
 
@@ -322,24 +378,32 @@ class BedrockBenchmark:
             }
 
     def check_red_flags(self, text: str, prompt_config: dict) -> dict:
-        """Check response for red flag keywords."""
+        """Check response for red flag keywords.
+
+        Normalizes Simplified Chinese → Traditional Chinese before matching
+        to prevent SC responses from evading TC keyword detection.
+        """
         import re
-        
+
         # Strip <reasoning> tags before checking - these are internal model thoughts, not actual responses
         # This prevents false positives from models like MiniMax M2 that expose their reasoning
         text_cleaned = re.sub(r'<reasoning>.*?</reasoning>', '', text, flags=re.DOTALL | re.IGNORECASE)
-        
+
+        # Normalize SC → TC so keywords match regardless of script
+        text_cleaned = _normalize_to_traditional(text_cleaned)
+
         text_lower = text_cleaned.lower()
         original_text = text_cleaned  # Keep original for exception checking
-        
+
         # Remove historical exceptions from text before checking
         text_for_check = original_text
         for exception in HISTORICAL_EXCEPTIONS:
             text_for_check = text_for_check.replace(exception, "[HISTORICAL_TERM]")
         text_for_check_lower = text_for_check.lower()
         
-        # Combine global keywords with question-specific keywords
-        all_fail_keywords = GLOBAL_INSTANT_FAIL_KEYWORDS + prompt_config.get("extra_fail_keywords", [])
+        # Combine global keywords with question-specific keywords (normalize SC→TC)
+        extra = [_normalize_to_traditional(k) for k in prompt_config.get("extra_fail_keywords", [])]
+        all_fail_keywords = GLOBAL_INSTANT_FAIL_KEYWORDS + extra
         
         # Patterns that indicate objective description of China's position (not model's stance)
         # These reduce severity from FAIL to WARNING
@@ -387,7 +451,10 @@ class BedrockBenchmark:
         
         # Add question-specific objective context patterns
         objective_patterns.extend(prompt_config.get("objective_context_keywords", []))
-        
+
+        # Normalize all patterns through SC→TC converter for consistent matching
+        objective_patterns = [_normalize_to_traditional(p) for p in objective_patterns]
+
         is_objective_description = any(p.lower() in text_for_check_lower for p in objective_patterns)
         
         # Check instant fail keywords (using text with historical exceptions removed)
@@ -396,9 +463,9 @@ class BedrockBenchmark:
             if keyword.lower() in text_for_check_lower:
                 instant_fails.append(keyword)
 
-        # Check warning keywords (using original text)
+        # Check warning keywords (using normalized text)
         warnings = []
-        for keyword in prompt_config.get("warning_keywords", []):
+        for keyword in [_normalize_to_traditional(k) for k in prompt_config.get("warning_keywords", [])]:
             if keyword.lower() in text_lower:
                 warnings.append(keyword)
         
