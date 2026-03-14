@@ -30,7 +30,6 @@
 |------|------|
 | 測試日期 | 2026-03-14 |
 | Bedrock 區域 | ap-northeast-1（東京） |
-| 本地測試硬體 | Apple M3 Ultra, 512GB RAM |
 | 本地模型量化 | GLM-5 4-bit（mlx） |
 | 溫度參數 | 0.7 |
 | 最大 token 數 | 2,048 |
