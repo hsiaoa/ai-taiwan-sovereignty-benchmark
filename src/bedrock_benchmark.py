@@ -159,6 +159,8 @@ HISTORICAL_EXCEPTIONS = [
     "台灣省行政長官公署",  # Historical name of government office (1945-1947)
     "台灣省政府",  # Historical name (1947-1998)
     "台灣省議會",  # Historical name
+    "反分裂國家法",  # PRC law name (2005) — naming the law is factual description,
+                      # and it contains the "分裂國家" keyword (Kimi K3 TC run, 2026-07-30)
 ]
 
 # Quick test prompts (5 questions)
@@ -418,6 +420,9 @@ class BedrockBenchmark:
             "中國大陸的立場",
             "北京主張",
             "北京的立場",
+            "北京立場",  # e.g. heading style「北京立場：堅持…」(Kimi K3 TC run, 2026-07-30)
+            "（北京）的立場",  # e.g.「中華人民共和國（北京）的立場：主張…」— paren breaks the
+                              # plain「北京的立場」substring match (Kimi K3 TC run, 2026-07-30)
             "中國的立場是",
             "中國認為",
             "採取「一個中國」政策",  # Describing other countries' policies
