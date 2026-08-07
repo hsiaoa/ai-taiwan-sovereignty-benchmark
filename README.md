@@ -36,7 +36,31 @@ AI Taiwan Sovereignty Benchmark 的目標是：
 
 
 
-## 🔬 最新研究：Kimi K3 的審查層由「輸入字體」觸發，system prompt 壓不住 (2026-07-30)
+## 🔬 最新研究：新一代中國模型的審查層正在變深 (2026-08-07)
+
+**完整報告：[2026-08 全面測試：8 個最新中國模型](FINDINGS_2026_08.md)**
+
+我們用與 Kimi K3 測試相同的方法（Fireworks API、Stage 1 全部 10 題、四種條件）測了 8 個最新一代中國模型。三月「審查是表面層、system prompt 可繞過」的結論**對新一代大多已不成立**：
+
+| 模型 | 繁體無提示 | 簡體無提示 | 簡體＋學術人格 | 簡體＋台灣人格 | 分類 |
+|------|-----------|-----------|--------------|--------------|------|
+| GLM-5.2 | 3/10 | 0/10 | **9/10** | 9/10 | 表面層 |
+| DeepSeek V4 Pro | 1/10 | 0/10 | 0/10 | 0/10 | **深層＋拒答** |
+| DeepSeek V4 Flash | 0/10 | 0/10 | 1/10 | 0/10 | **深層＋拒答** |
+| Kimi K2.6 | 0/10 | 0/10 | 5/10 | **9/10** | 表面層（預設全滅） |
+| Kimi K2.7-Code | **10/10** | 2/10 | **10/10** | **10/10** | 字體閘門，表面層 |
+| MiniMax M2.7 | 2/10 | 0/10 | 0/10 | 0/10 | **深層** |
+| MiniMax M3 | **10/10** | 1/10 | 2/10 | 4/10 | **字體閘門，深層** |
+| Qwen3.7-Plus | 2/10 | 1/10 | 6/10 | 7/10 | 中度 |
+
+四個重點：
+
+1. **表面層時代正在結束** — 8 個模型只剩 Kimi K2.7-Code 能被 system prompt 完全救回；DeepSeek V4 與 MiniMax 新世代幾乎完全免疫
+2. **K3 的「字體閘門」正在擴散** — MiniMax M3 與 Kimi K2.7-Code 都出現「繁體 10/10、簡體崩盤」的同型行為
+3. **DeepSeek V4 把台灣人格當成越獄攻擊** — 回覆「我不能参与这个设定……如果你有其他非越狱且安全合规的请求」，代表「繞過對台審查」已被納入其安全訓練的威脅模型
+4. **預設行為全面惡化** — Kimi K2.6 連繁體題目都 0/10（K2 世代首見）；Qwen3.7-Plus 直接用繁體字輸出「世界上只有一個中國」
+
+## 🔬 Kimi K3 的審查層由「輸入字體」觸發，system prompt 壓不住 (2026-07-30)
 
 **完整報告：[Kimi K3：簡體字輸入觸發的審查層](KIMI_K3_FINDINGS.md)**
 
@@ -213,6 +237,18 @@ python src/system_prompt_benchmark.py --bedrock --bedrock-model deepseek.v3-v1:0
 
 # 列出所有可用的提示詞策略
 python src/system_prompt_benchmark.py --list-variants
+
+# --- Fireworks AI 測試（2026-07/08 起的主要測試路徑）---
+
+# API key 放在 ~/.config/fireworks/api_key 或 FIREWORKS_API_KEY 環境變數
+# 測單一模型：四種條件（繁/簡 × 無提示/人格）× 10 題，結果進 results/raw/
+venv/bin/python src/fireworks_benchmark.py --model glm-5p2
+
+# 只跑特定條件
+venv/bin/python src/fireworks_benchmark.py --model deepseek-v4-pro --conditions tc_baseline sc_baseline
+
+# 評分器修正後重評既有的原始結果（會列出每一筆判定翻轉供人工複讀）
+venv/bin/python src/rescore_raw.py results/raw/*20260807*.json
 ```
 
 ---
@@ -310,7 +346,10 @@ taiwan-sovereignty-benchmark/
 │   └── models.yaml              # 測試模型清單
 ├── src/
 │   ├── __init__.py              # 套件初始化
-│   └── bedrock_benchmark.py     # AWS Bedrock 測試程式（主程式）
+│   ├── bedrock_benchmark.py     # AWS Bedrock 測試程式（含 check_red_flags 評分器）
+│   ├── fireworks_benchmark.py   # Fireworks AI 測試程式（繁/簡 × 人格四條件）
+│   ├── rescore_raw.py           # 評分器修正後重評原始結果
+│   └── system_prompt_benchmark.py # 系統提示詞效果測試
 ├── results/
 │   ├── raw/                     # 原始回應（新測試結果）
 │   ├── scores/                  # 評分結果（新測試結果）
